@@ -1,5 +1,5 @@
 from typing import Any, List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from automcp.models import (
     ModelResponse,
@@ -14,17 +14,16 @@ from automcp.logger import setup_logging
 logger = setup_logging(__name__)
 
 
-SYS_PROMPT = """You are a documentation extractor. 
-Given the raw man-page text for a command, parse it into JSON using the following rules:
-- Arguments
-    - Include only positional arguments.
+SYS_PROMPT = """Given the man page for a command utility, parse it into JSON using the following rules:
+- Arguments Rules:
+    - include positional arguments.
     - name is exactly as shown (e.g. file, pattern).
-    - optional is true if the synopsis encloses it in brackets ([ ]), else false.
-- Options
-    - name: the full flag (always starts with --).
-    - short_name: the single-hyphen alias (starts with -), or "" if none.
-    - type: data type (e.g. integer, string) if the option takes argument and type is mentioned, else "".
-- Do not invent flags or arguments—only extract what's present.
+    - optional is true if the synopsis encloses it in brackets ([]), else false.
+- Options Rules: 
+    - flag: complete flag name (e.g. --help, --version).
+    - short_option: flag alias (e.g -h, -v), or "" if none.
+    - type: if the option takes argument and type is mentioned, else "".
+- Only extract what is present.
 """
 
 USER_PROMPT = """### Query
@@ -36,13 +35,12 @@ class Argument(BaseModel):
     optional: bool
 
 class Option(BaseModel):
-    name: str
+    flag: str
     description: str
-    short_name: Optional[str] = ""
+    short_option: Optional[str]
     type: str
 
 class Command(BaseModel):
-    name: str
     description: str
     arguments: List[Argument]
     options: List[Option]

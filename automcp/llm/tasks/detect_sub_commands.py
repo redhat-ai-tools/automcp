@@ -13,8 +13,9 @@ logger = setup_logging(__name__)
 
 
 SYS_PROMPT = """Given below is a man page description of a command.
-You must return true if the command has sub-commands, otherwise false.
-Do NOT under any circumstances try to generate a code. Keep your response short.
+You must return true if the man page has sub-commands, otherwise false.
+- Do NOT under any circumstances try to generate a code. Keep your response short.
+- Do NOT consider arguments, flags, options as sub-commands.
 """
 
 USER_PROMPT = """### Query

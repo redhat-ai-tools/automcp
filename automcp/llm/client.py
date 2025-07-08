@@ -1,5 +1,6 @@
 import os
 
+import httpx
 import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -15,6 +16,7 @@ class LLMClient:
         self.client = openai.OpenAI(
             api_key=os.getenv("MODEL_KEY"),
             base_url=os.getenv("MODEL_BASE_URL"),
+            http_client=httpx.Client(verify=False),
         )
 
     def __call__(self,
@@ -35,6 +37,7 @@ class LLMClient:
             ],
             "temperature": 0.0,
             "max_tokens": 2048,
+            "top_p": 1,
         }
         if response_format is not None:
             chat_completion_params['response_format'] = response_format

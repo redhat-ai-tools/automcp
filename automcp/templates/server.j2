@@ -1,0 +1,32 @@
+import shlex
+import subprocess
+from mcp.server.fastmcp import FastMCP
+
+def run_shell(command):
+    logs = ""
+    command = shlex.split(command)
+    process = subprocess.Popen(
+        command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
+    if process.stdout is None:
+        raise subprocess.CalledProcessError(
+            returncode=process.returncode,
+            cmd=command,
+            output=logs,
+            stderr=logs,
+        )
+    for line in process.stdout:
+        logs += line
+    process.wait()
+    return logs
+
+mcp = FastMCP(name="{{ name }} MCP Server")
+
+{% for command in commands %}
+
+@mcp.tool()
+def {{ command.function }}(a: int, b: int) -> str:
+    """{{ command.description }}"""
+    return run_shell("{{ command.command }}")
+
+{% endfor %}

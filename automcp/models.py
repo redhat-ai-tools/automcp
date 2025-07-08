@@ -1,0 +1,32 @@
+from enum import Enum
+from typing import List, Dict, Any
+from pydantic import BaseModel
+
+COMMAND_HELP = "{program} {help_command}"
+
+DUMMY_PROMPT_TOKEN = "|%|"
+DUMMY_PROMPT = "{system}|%|{user}"
+
+# LLM Tasks
+class TasksTag(str, Enum):
+    detect_sub_commands = "detect_sub_commands"
+    extract_command = "extract_command"
+
+
+# LLM Response
+class ModelResponse(BaseModel):
+    tags: list = []
+    text: str = ""
+    metadata: Any = None
+
+
+class ModelResponseList(ModelResponse):
+    items: List[str | Dict | Any] = []
+
+
+class ModelResponseDict(ModelResponse):
+    data: Dict[str, Any] = {}
+
+
+class ModelBooleanResponse(ModelResponse):
+    bool_value: bool

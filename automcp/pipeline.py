@@ -4,7 +4,7 @@ from automcp.llm.tasks.extract_command import Command, ExtractCommand
 from automcp.models import (
     COMMAND_HELP,
     ModelBooleanResponse,
-    ModelResponseDict,
+    ModelResponseData,
 )
 from automcp.logger import setup_logging
 from automcp.utils import run_shell
@@ -21,7 +21,7 @@ class AutoMCP_Pipeline:
         '''Run the pipeline for a given program to generate MCP server.'''
         sub_commands = self._detect_sub_commands(program, help_command)
         logger.debug("No. of sub-commands: %d", len(sub_commands))
-        print(sub_commands[0])
+        
 
 
     def _detect_sub_commands(self, program: str, help_command: str):
@@ -51,5 +51,5 @@ class AutoMCP_Pipeline:
         result = self.executor.run(
             ExtractCommand(query=help_docs)
         )
-        result = cast(ModelResponseDict, result)
+        result = cast(ModelResponseData, result)
         return cast(Command, result.data)

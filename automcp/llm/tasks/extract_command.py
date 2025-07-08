@@ -1,10 +1,10 @@
-from typing import Any, List
+from typing import Any, List, Optional
 from pydantic import BaseModel
 
 from automcp.models import (
     ModelResponse,
     TasksTag,
-    ModelResponseDict
+    ModelResponseData
 )
 
 from automcp.llm.task import LLMTask
@@ -14,22 +14,17 @@ from automcp.logger import setup_logging
 logger = setup_logging(__name__)
 
 
-SYS_PROMPT = """Given below is a man page description of a command.
-You must return JSON object with the following fields:
-- description: str
-- arguments: list[argument]
-- options: list[option]
-
-argument:
-- name: str
-- optional: bool
-
-option:
-- name: str
-- description: str
-- short_name: str
-- type: str
-
+SYS_PROMPT = """You are a documentation extractor. 
+Given the raw man-page text for a command, parse it into JSON using the following rules:
+- Arguments
+    - Include only positional arguments.
+    - name is exactly as shown (e.g. file, pattern).
+    - optional is true if the synopsis encloses it in brackets ([ ]), else false.
+- Options
+    - name: the full flag (always starts with --).
+    - short_name: the single-hyphen alias (starts with -), or "" if none.
+    - type: data type (e.g. integer, string) if the option takes argument and type is mentioned, else "".
+- Do not invent flags or arguments—only extract what's present.
 """
 
 USER_PROMPT = """### Query
@@ -43,10 +38,11 @@ class Argument(BaseModel):
 class Option(BaseModel):
     name: str
     description: str
-    short_name: str
+    short_name: Optional[str] = ""
     type: str
 
 class Command(BaseModel):
+    name: str
     description: str
     arguments: List[Argument]
     options: List[Option]
@@ -82,9 +78,9 @@ class ExtractCommand(LLMTask):
             "response_format": Command,
         }
 
-    def postprocess(self, result: dict) -> ModelResponseDict:
+    def postprocess(self, result: Command) -> ModelResponseData:
         tags = self.tags
-        return ModelResponseDict(
+        return ModelResponseData(
             data=result,
             tags=tags,
             metadata=self.metadata

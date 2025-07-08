@@ -46,6 +46,7 @@ class LLMTaskExecutor:
             system=task_prompts["system"],
             user=task_prompts["user"],
         )
+
         request_prompt = request_prompt.format(
             **query_params
         )

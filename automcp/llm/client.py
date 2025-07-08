@@ -22,6 +22,11 @@ class LLMClient:
         user_prompt: str,
         response_format = None
     ):
+        '''
+        Returns the response from the LLM.
+        If response_format is provided, it returns the parsed response.
+        Otherwise, it returns the raw response.
+        '''
         chat_completion_params = {
             "model": self.model_name,
             "messages": [

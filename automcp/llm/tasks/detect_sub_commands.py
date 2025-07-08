@@ -13,7 +13,7 @@ logger = setup_logging(__name__)
 
 
 SYS_PROMPT = """Given below is a man page description of a command.
-You must return "true" if the command has sub-commands, otherwise "false".
+You must return true if the command has sub-commands, otherwise false.
 Do NOT under any circumstances try to generate a code. Keep your response short.
 """
 
@@ -50,7 +50,7 @@ class DetectSubCommands(LLMTask):
 
     def postprocess(self, result: str) -> ModelBooleanResponse:
         tags = self.tags
-        check_result = result.lstrip().startswith("true")
+        check_result = result.lower().lstrip().startswith("true")
         return ModelBooleanResponse(
             bool_value=check_result,
             text=result,

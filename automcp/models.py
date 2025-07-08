@@ -30,3 +30,7 @@ class ModelResponseDict(ModelResponse):
 
 class ModelBooleanResponse(ModelResponse):
     bool_value: bool
+
+
+class ModelResponseData(ModelResponse):
+    data: Any

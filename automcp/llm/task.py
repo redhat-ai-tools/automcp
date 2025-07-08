@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 from automcp.models import ModelResponse
 
@@ -21,6 +22,6 @@ class LLMTask(ABC):
         pass
 
     @abstractmethod
-    def postprocess(self, response: str) -> ModelResponse:
+    def postprocess(self, response: str | Any) -> ModelResponse:
         # Takes in raw string response from LLM and returns a ModelResponse object
         pass

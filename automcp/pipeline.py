@@ -25,8 +25,9 @@ class AutoMCP_Pipeline:
         logger.debug("No. of sub-commands: %d", len(sub_commands))
 
         server_template = create_server_template(sub_commands)
-        logger.debug("Server template: %s", server_template)
+        # logger.debug("Server template: %s", server_template)
 
+        return server_template
 
     def _detect_sub_commands(self, program: str, help_command: str):
         '''Recursively detect sub-commands from the help docs.'''

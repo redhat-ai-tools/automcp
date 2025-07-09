@@ -32,6 +32,6 @@ def create_server_template(commands: List[CommandItem]) -> str:
     template_str = open(template_path).read()
     template = environment.from_string(template_str)
     return template.render(
+        name=(commands[0].command.split()[0] if len(commands) > 0 else "AutoMCP"),
         commands=list(map(prepare_command, commands))
     )
-

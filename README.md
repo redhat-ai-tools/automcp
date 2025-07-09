@@ -11,6 +11,7 @@ source .venv/bin/activate
 mkdir -p tmp
 cd tmp
 
-uv run automcp create -p "sqlite3"
+uv run automcp create -p "sqlite3" -o ./tmp
 
+uv run automcp create -p "podman pull" -o ./tmp
 ```

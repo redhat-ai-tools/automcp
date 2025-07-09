@@ -1,8 +1,7 @@
-from typing import List
 import subprocess
 from mcp.server.fastmcp import FastMCP
 
-def run_shell(command: List[str]):
+def run_shell(command):
     logs = ""
     process = subprocess.Popen(
         command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
@@ -33,7 +32,7 @@ def {{ command.function }}(
     splits = "{{ command.command }}".split()
     commands = splits + [
         {%- for arg in command.args %}
-        "{{ arg.name }}",
+            {{ arg.name }},
         {%- endfor %}
     ]
     return run_shell(commands)

@@ -30,8 +30,8 @@ def {{ command.function }}(
 {%- endfor %}
 ) -> str:
     """{{ command.description }}"""
-    commands = [
-        "{{ command.command }}",
+    splits = "{{ command.command }}".split()
+    commands = splits + [
         {%- for arg in command.args %}
         "{{ arg.name }}",
         {%- endfor %}

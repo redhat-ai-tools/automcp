@@ -4,7 +4,11 @@ from pydantic import BaseModel, Field
 from automcp.models import (
     ModelResponse,
     TasksTag,
-    ModelResponseData
+    ModelResponseData,
+    Command,
+    Argument,
+    Option,
+    CommandItem
 )
 
 from automcp.llm.task import LLMTask
@@ -29,21 +33,6 @@ SYS_PROMPT = """Given the man page for a command utility, parse it into JSON usi
 USER_PROMPT = """### Query
 {query}
 """
-
-class Argument(BaseModel):
-    name: str
-    optional: bool
-
-class Option(BaseModel):
-    flag: str
-    description: str
-    short_option: Optional[str]
-    type: str
-
-class Command(BaseModel):
-    description: str
-    arguments: List[Argument]
-    options: List[Option]
 
 class ExtractCommand(LLMTask):
     """

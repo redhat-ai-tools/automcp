@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
 
 COMMAND_HELP = "{program} {help_command}"
@@ -34,3 +34,25 @@ class ModelBooleanResponse(ModelResponse):
 
 class ModelResponseData(ModelResponse):
     data: Any
+
+
+# Models for command extraction
+
+class Argument(BaseModel):
+    name: str
+    optional: bool
+
+class Option(BaseModel):
+    flag: str
+    description: str
+    short_option: Optional[str]
+    type: str
+
+class Command(BaseModel):
+    description: str
+    arguments: List[Argument]
+    options: List[Option]
+
+class CommandItem(BaseModel):
+    command: str
+    data: Command

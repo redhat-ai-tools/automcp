@@ -38,3 +38,7 @@ def {{ command.function }}(
     return run_shell(commands)
 
 {% endfor %}
+
+# Entry point to run the server
+if __name__ == "__main__":
+    mcp.run()

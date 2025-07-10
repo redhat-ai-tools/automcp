@@ -11,20 +11,18 @@ def cli():
 @cli.command()
 @click.option("--program", "-p", help="Path to script, CLI, or executable", required=True)
 @click.option("--help_command", "-hc", help="Name of the help command", default="--help")
-@click.option("--output", "-o", help="Path to output directory", default=".")
+@click.option("--output", "-o", help="Save path for the MCP server", default="./server.py")
 def create(program, help_command, output):
     click.echo(f"Creating MCP server for project: {program}")
 
     pipeline = AutoMCP_Pipeline()
     server_template = pipeline.run(program, help_command)
 
-    os.makedirs(output, exist_ok=True)
-    filename = f"{program.lower().replace(' ', '-').replace('-', '-')}-server.py"
-    filepath = os.path.join(output, filename)
-    with open(filepath, "w") as f:
+    head, _ = os.path.split(output)
+    os.makedirs(head, exist_ok=True)
+    with open(output, "w") as f:
         f.write(server_template)
-
-    click.echo(f"MCP server tool created at {filepath}") 
+    click.echo(f"MCP server tool created at {output}") 
 
 if __name__ == "__main__":
     cli()

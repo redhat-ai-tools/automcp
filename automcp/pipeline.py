@@ -39,20 +39,18 @@ class AutoMCP_Pipeline:
         logger.debug("Length of help docs: %d", len(help_docs))
         # logger.debug("First 100 chars of help docs: %s", help_docs[:100] + "...")
 
-        if self.check_sub_command_exists(help_docs):
+        if self.check_sub_command_exists(program, help_docs):
             command_list = self.extract_command_list(help_docs)
             logger.debug("Found %d commands", len(command_list))
+            
+            if not self.validate_command_list(command_list, program):
+                return []
+
             logger.debug("\nExtracted commands:")
             for command in command_list:
                 logger.debug("  %s", command)
             result = []
             for command in command_list:
-                # TODO: This is a hack to skip commands that are not part of the program.
-                # We need to improve this by using a more robust method to detect if a command is part of the program.
-                # LLM currently is not good at detecting if a command is part of the program.
-                if program.endswith(command):
-                    logger.debug("Skipping command: %s", command)
-                    continue
                 result += self._detect_sub_commands(f"{program} {command}", help_command)
             return result
         else:
@@ -62,10 +60,13 @@ class AutoMCP_Pipeline:
                 logger.error("Error extracting command (%s): %s", program, e)
                 return []
 
-    def check_sub_command_exists(self, help_docs: str):
+    def check_sub_command_exists(self, program: str, help_docs: str):
         '''Check if the help docs contain sub-commands.'''
         result = self.executor.run(
-            DetectSubCommands(query=help_docs)
+            DetectSubCommands(
+                query=help_docs,
+                command=program
+            )
         )
         result = cast(ModelBooleanResponse, result)
         return result.bool_value
@@ -86,3 +87,11 @@ class AutoMCP_Pipeline:
         )
         result = cast(ModelResponseList, result)
         return cast(List[str], result.items)
+    
+    def validate_command_list(self, command_list: List[str], program: str) -> bool:
+        '''Validate the command list.'''
+        if " ".join(command_list) == program:
+            return False
+        if len(set(command_list)) != len(command_list):
+            return False
+        return True

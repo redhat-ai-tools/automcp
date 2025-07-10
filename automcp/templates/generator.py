@@ -15,12 +15,25 @@ def prepare_arg(arg: Argument):
         "name": process_safe_name(arg.name),
     }
 
+def combine_args(args: List[Argument]):
+    if len(set([x.name for x in args])) == 1:
+        return [
+            Argument(
+                name=f"*{args[0].name}",
+                optional=False,
+            )
+        ]
+
+    return args
+
 def prepare_command(command: CommandItem):
+    args = combine_args(command.data.arguments)
+
     return {
         "command": command.command,
         "description": command.data.description,
         "function": process_safe_name(command.command),
-        "args": [ prepare_arg(arg) for arg in command.data.arguments ],
+        "args": [ prepare_arg(arg) for arg in args ],
     }
 
 

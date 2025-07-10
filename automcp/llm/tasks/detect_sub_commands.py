@@ -14,10 +14,9 @@ from automcp.logger import setup_logging
 logger = setup_logging(__name__)
 
 
-SYS_PROMPT = """Given below is a man page for CLI a utility.
+SYS_PROMPT = """Given below is the command and man page for CLI based utility.
 You must return true if the man page lists any sub-commands, otherwise return false.
 Do NOT consider example, usages, description, arguments, flags, options as sub-commands.
-Sub-commands will have a separate section in the man page.
 
 Example 1:
 # Example 1:
@@ -91,7 +90,10 @@ Output: bool_value=false
 
 """
 
-USER_PROMPT = """### Query
+USER_PROMPT = """### Command
+{command}
+
+### Man Page
 {query}
 """
 
@@ -105,11 +107,13 @@ class DetectSubCommands(LLMTask):
 
     def __init__(
         self,
+        command: str,
         query: str,
         tags: List = [],
         metadata: Any = None
     ):
         self._tags = tags
+        self.command = command
         self.query = query
         self.metadata = metadata
 
@@ -119,6 +123,7 @@ class DetectSubCommands(LLMTask):
 
     def preprocess(self):
         return {
+            "command": self.command,
             "query": self.query
         }
 

@@ -30,6 +30,11 @@ def {{ command.function }}(
 ) -> str:
     """{{ command.description }}"""
     splits = "{{ command.command }}".split()
+
+    {%- if command.args|length == 1 and command.args[0].name.startswith("*") %}
+    splits = splits + [ x for x in {{ command.args[0].name[1:] }} ]
+    {%- endif %}
+
     commands = splits + [
         {%- for arg in command.args %}
             {{ arg.name }},

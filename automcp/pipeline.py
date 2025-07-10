@@ -42,12 +42,25 @@ class AutoMCP_Pipeline:
         if self.check_sub_command_exists(help_docs):
             command_list = self.extract_command_list(help_docs)
             logger.debug("Found %d commands", len(command_list))
+            logger.debug("\nExtracted commands:")
+            for command in command_list:
+                logger.debug("  %s", command)
             result = []
             for command in command_list:
-                result += self._detect_sub_commands(f"{program} {command}", help_docs)
+                # TODO: This is a hack to skip commands that are not part of the program.
+                # We need to improve this by using a more robust method to detect if a command is part of the program.
+                # LLM currently is not good at detecting if a command is part of the program.
+                if program.endswith(command):
+                    logger.debug("Skipping command: %s", command)
+                    continue
+                result += self._detect_sub_commands(f"{program} {command}", help_command)
             return result
         else:
-            return [self.extract_command(program, help_docs)]
+            try:
+                return [self.extract_command(program, help_docs)]
+            except Exception as e:
+                logger.error("Error extracting command (%s): %s", program, e)
+                return []
 
     def check_sub_command_exists(self, help_docs: str):
         '''Check if the help docs contain sub-commands.'''

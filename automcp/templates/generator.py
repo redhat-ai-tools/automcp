@@ -8,7 +8,7 @@ environment = jinja2.Environment()
 environment.globals['enumerate'] = enumerate
 
 def process_safe_name(command: str):
-    return command.strip().replace("-", "_").replace(" ", "_").lower()
+    return command.strip().replace("-", "_").replace(" ", "_").replace(":", "_").lower()
 
 def prepare_arg(arg: Argument):
     return {

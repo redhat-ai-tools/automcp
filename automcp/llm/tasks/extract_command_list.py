@@ -25,6 +25,9 @@ Rules:
 - Only extract what is present.
 - Return a list of commands.
 - Each command should be a string.
+- Each command should be a single word.
+- Do NOT include description or any other text.
+- Do NOT include arguments or options.
 """
 
 USER_PROMPT = """### Query

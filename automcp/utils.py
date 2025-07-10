@@ -10,7 +10,7 @@ def run_shell(command):
     '''
     Run shell command and get logs and statuscode in output.
     '''
-    logger.debug("Running command: %s", command)
+    logger.debug("Running command: %s\n", command)
     logs = ""
     command = shlex.split(command)
     process = subprocess.Popen(

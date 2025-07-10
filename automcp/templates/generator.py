@@ -8,32 +8,40 @@ environment = jinja2.Environment()
 environment.globals['enumerate'] = enumerate
 
 def process_safe_name(command: str):
-    return command.strip().replace("-", "_").replace(" ", "_").replace(":", "_").lower()
+    return command.strip()\
+        .lower()\
+        .replace("-", "_")\
+        .replace(" ", "_")\
+        .replace(":", "_")\
+        .replace(".", "")\
+        .replace("*", "")\
+        .replace("|", "")
 
 def prepare_arg(arg: Argument):
     return {
         "name": process_safe_name(arg.name),
     }
 
-def combine_args(args: List[Argument]):
-    if len(set([x.name for x in args])) == 1:
+def preprocess_args(args: List[Argument]):
+    # Case when multiple arguments have same name.
+    # e.g. kubectl get pods
+    arg_names = [process_safe_name(x.name) for x in args]
+    if len(set(arg_names)) == 1 and len(arg_names) > 1:
         return [
             Argument(
-                name=f"*{args[0].name}",
+                name=f"*{process_safe_name(args[0].name)}",
                 optional=False,
             )
         ]
-
-    return args
+    return [prepare_arg(arg) for arg in args]
 
 def prepare_command(command: CommandItem):
-    args = combine_args(command.data.arguments)
-
+    args = preprocess_args(command.data.arguments)
     return {
         "command": command.command,
         "description": command.data.description,
         "function": process_safe_name(command.command),
-        "args": [ prepare_arg(arg) for arg in args ],
+        "args": args,
     }
 
 

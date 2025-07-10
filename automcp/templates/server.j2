@@ -33,14 +33,15 @@ def {{ command.function }}(
 
     {%- if command.args|length == 1 and command.args[0].name.startswith("*") %}
     splits = splits + [ x for x in {{ command.args[0].name[1:] }} ]
-    {%- endif %}
-
-    commands = splits + [
+    {%- else %}
+    splits = splits + [
         {%- for arg in command.args %}
-            {{ arg.name }},
+        {{ arg.name }}{%- if loop.index0 < command.args|length - 1 %},{% endif %}
         {%- endfor %}
     ]
-    return run_shell(commands)
+    {%- endif %}
+
+    return run_shell(splits)
 
 {% endfor %}
 

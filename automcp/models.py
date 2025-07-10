@@ -11,6 +11,7 @@ DUMMY_PROMPT = "{system}|%|{user}"
 class TasksTag(str, Enum):
     detect_sub_commands = "detect_sub_commands"
     extract_command = "extract_command"
+    extract_command_list = "extract_command_list"
 
 
 # LLM Response

@@ -1,16 +1,18 @@
 from automcp.llm.executor import LLMTaskExecutor
-from typing import cast
+from typing import List, cast
 from automcp.llm.tasks.extract_command import Command, ExtractCommand
 from automcp.models import (
     COMMAND_HELP,
     CommandItem,
     ModelBooleanResponse,
     ModelResponseData,
+    ModelResponseList,
 )
 from automcp.logger import setup_logging
 from automcp.utils import run_shell
 from automcp.llm.tasks.detect_sub_commands import DetectSubCommands
 from automcp.templates.generator import create_server_template
+from automcp.llm.tasks.extract_command_list import ExtractCommandList
 
 logger = setup_logging(__name__)
 
@@ -38,8 +40,12 @@ class AutoMCP_Pipeline:
         # logger.debug("First 100 chars of help docs: %s", help_docs[:100] + "...")
 
         if self.check_sub_command_exists(help_docs):
-            return []
-            # return self._detect_sub_commands(program, help_command)
+            command_list = self.extract_command_list(help_docs)
+            logger.debug("Found %d commands", len(command_list))
+            result = []
+            for command in command_list:
+                result += self._detect_sub_commands(f"{program} {command}", help_docs)
+            return result
         else:
             return [self.extract_command(program, help_docs)]
 
@@ -59,3 +65,11 @@ class AutoMCP_Pipeline:
         result = cast(ModelResponseData, result)
         data = cast(Command, result.data)
         return CommandItem(command=command, data=data)
+
+    def extract_command_list(self, help_docs: str) -> List[str]:
+        '''Extract all the commands from the help docs.'''
+        result = self.executor.run(
+            ExtractCommandList(query=help_docs)
+        )
+        result = cast(ModelResponseList, result)
+        return cast(List[str], result.items)

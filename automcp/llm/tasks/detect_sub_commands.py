@@ -16,6 +16,7 @@ SYS_PROMPT = """Given below is a man page description of a command.
 You must return true if the man page has sub-commands, otherwise false.
 - Do NOT under any circumstances try to generate a code. Keep your response short.
 - Do NOT consider arguments, flags, options as sub-commands.
+- If there is explicit mention of title "commands" or "subcommands" or similar then return true, otherwise false.
 """
 
 USER_PROMPT = """### Query

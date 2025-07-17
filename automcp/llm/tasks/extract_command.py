@@ -52,7 +52,7 @@ class ExtractCommand(LLMTask):
     def _preprocess_command_string(self, command: str) -> str:
         command = command.strip()
         # Remove short flags like -h, -v, etc.
-        command = re.sub(r'-\w', '', command)
+        command = re.sub(r'-\w(?!\w)', '', command)
         return command
 
     def preprocess(self):

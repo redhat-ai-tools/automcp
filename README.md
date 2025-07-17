@@ -19,12 +19,13 @@ The reason behind creation of this framework is because:
 
 ## 🌟 Key Features
 
+- **MCP Server**
 - **Supported Protocols**: 
     - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
-    - [Universal Tool Calling Protocol (UTCP)](https://www.utcp.io) [Future]
-    - [Agent2Agent (A2A)](https://github.com/a2aproject/A2A) [Future]
-- CLI Tool Aggregator [Future]
-- API Support (OpenAPI and Swagger) [Future]
+    - [Universal Tool Calling Protocol (UTCP)](https://www.utcp.io) [Future Scope]
+    - [Agent2Agent (A2A)](https://github.com/a2aproject/A2A) [Future Scope]
+- CLI Tool Aggregator [Future Scope]
+- API Support (OpenAPI and Swagger) [Future Scope]
 
 
 ## 🚦 Getting Started

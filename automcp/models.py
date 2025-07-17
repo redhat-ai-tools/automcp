@@ -46,7 +46,7 @@ class Argument(BaseModel):
 class Option(BaseModel):
     flag: str
     description: str
-    short_option: Optional[str]
+    # short_option: Optional[str]
     type: str
 
 class Command(BaseModel):

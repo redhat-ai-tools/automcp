@@ -1,14 +1,11 @@
-from typing import Any, List, Optional
-from pydantic import BaseModel, Field
+import re
+from typing import Any, List
+
 
 from automcp.models import (
-    ModelResponse,
     TasksTag,
     ModelResponseData,
     Command,
-    Argument,
-    Option,
-    CommandItem
 )
 
 from automcp.llm.task import LLMTask
@@ -25,7 +22,6 @@ SYS_PROMPT = """Given the man page for a command utility, parse it into JSON usi
     - optional is true if the synopsis encloses it in brackets ([]), else false.
 - Options Rules: 
     - flag: complete flag name (e.g. --help, --version).
-    - short_option: flag alias (e.g -h, -v), or "" if none.
     - type: if the option takes argument and type is mentioned, else "".
 - Only extract what is present.
 """
@@ -53,9 +49,15 @@ class ExtractCommand(LLMTask):
     def tags(self):
         return [TasksTag.extract_command] + self._tags
 
+    def _preprocess_command_string(self, command: str) -> str:
+        command = command.strip()
+        # Remove short flags like -h, -v, etc.
+        command = re.sub(r'-\w', '', command)
+        return command
+
     def preprocess(self):
         return {
-            "query": self.query
+            "query": self._preprocess_command_string(self.query)
         }
 
     def prompt(self):

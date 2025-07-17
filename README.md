@@ -43,7 +43,7 @@ uv venv --python 3.9
 source .venv/bin/activate
 
 # Install Dependencies
-uv pip install -r requirements.txt
+uv sync
 
 # Install automcp
 uv pip install -e .
@@ -69,5 +69,5 @@ uv run automcp --help
 
 # Generate mcp server for a podman command
 mkdir -p tmp
-uv run automcp create -p "podman container" -o ./tmp/server.py
+uv run automcp create -p "podman images" -o ./tmp/server.py
 ```

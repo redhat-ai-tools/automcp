@@ -2,6 +2,7 @@ import click
 import os
 from automcp import VERSION
 from automcp.pipeline import AutoMCP_Pipeline
+from automcp.mcp_server import mcp
 
 @click.group()
 @click.version_option(VERSION, "-v", "--version")
@@ -23,6 +24,15 @@ def create(program, help_command, output):
     with open(output, "w") as f:
         f.write(server_template)
     click.echo(f"MCP server tool created at {output}") 
+
+
+@cli.command()
+def run():
+    """
+    Run the AutoMCP Server.
+    """
+    click.echo(f"Starting AutoMCP Server...")
+    mcp.run()
 
 if __name__ == "__main__":
     cli()

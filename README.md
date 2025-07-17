@@ -61,6 +61,8 @@ Update the following properties in the `.env` file:
 
 # Usage
 
+## Standalone
+
 ```
 source .env
 
@@ -71,3 +73,34 @@ uv run automcp --help
 mkdir -p tmp
 uv run automcp create -p "podman images" -o ./tmp/server.py
 ```
+
+## MCP Server
+
+AutoMCP also provides MCP server that lets you create MCP servers from a MCP client. 
+
+You can start the MCP server with automcp cli by running the command:
+
+```
+uv run automcp run
+```
+
+If you want to register the AutoMCP MCP server in cursor or claude, then you can add the following json configuration to your `mcp.json`:
+
+```json
+"automcp-server":{
+    "command": "uv",
+    "args": [
+        "run",
+        "automcp",
+        "run"
+    ],
+    "env": {
+        "MODEL_BASE_URL": "...",
+        "MODEL_KEY": "...",
+        "MODEL_NAME": "..."
+    }
+}
+```
+
+
+Currently you still need to manually register the ouput 

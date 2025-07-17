@@ -1,4 +1,5 @@
 import os
+import re
 import shlex
 import subprocess
 
@@ -28,3 +29,7 @@ def run_shell(command):
     process.wait()
     logger.debug("Run Status: %d", process.returncode)
     return logs
+
+
+def safe_name(name: str) -> str:
+    return re.sub(r'[^a-zA-Z0-9]', '_', name)

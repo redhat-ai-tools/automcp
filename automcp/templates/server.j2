@@ -35,7 +35,7 @@ def {{ command.function }}(
     splits = splits + [ x for x in {{ command.args[0].name[1:] }} ]
     {%- else %}
     {%- for arg in command.args %}
-    if {{ arg.name }} is not None or {{ arg.name }} != "":
+    if {{ arg.name }} is not None and {{ arg.name }} != "":
         splits.append({{ arg.name }})
     {%- endfor %}
     {%- endif %}

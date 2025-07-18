@@ -1,5 +1,6 @@
 import jinja2
 import os
+import re
 from typing import List
 from automcp.models import Argument, CommandItem
 
@@ -8,7 +9,7 @@ environment = jinja2.Environment()
 environment.globals['enumerate'] = enumerate
 
 def process_safe_name(command: str):
-    return command.strip()\
+    command = command.strip()\
         .lower()\
         .replace("-", "_")\
         .replace(" ", "_")\
@@ -16,6 +17,11 @@ def process_safe_name(command: str):
         .replace(".", "")\
         .replace("*", "")\
         .replace("|", "")
+
+    # Remove all non-alphanumeric characters except underscore
+    command = re.sub(r'[^a-zA-Z0-9_]', '', command)
+
+    return command
 
 def prepare_arg(arg: Argument):
     return {

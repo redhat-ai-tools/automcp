@@ -1,6 +1,7 @@
 # server.py
 import os
 from mcp.server.fastmcp import FastMCP
+from automcp.constants import OUTPUT_TEMPLATE
 from automcp.pipeline import AutoMCP_Pipeline
 from automcp.utils import safe_name
 
@@ -15,23 +16,6 @@ save_dir = os.getenv(
     )
 )
 
-OUTPUT_TEMPLATE = '''
-MCP server created at {server_path}
-
-Add following server configuration to mcp.json:
-{{
-    "{safe_command_name}": {{
-        "command": "uv",
-        "args": [
-            "--directory",
-            "{save_dir}",
-            "run",
-            "{safe_command_name}_server.py"
-        ]
-    }}
-}}
-'''
-
 # Add an addition tool
 @mcp.tool()
 def create_mcp_server(command: str) -> str:
@@ -41,7 +25,8 @@ def create_mcp_server(command: str) -> str:
     
     os.makedirs(save_dir, exist_ok=True)
     safe_command_name = safe_name(command)
-    server_path = os.path.join(save_dir, f"{safe_command_name}_server.py")
+    file_name = f"{safe_command_name}_server.py"
+    server_path = os.path.join(save_dir, file_name)
 
     with open(server_path, "w") as f:
         f.write(server_template)
@@ -49,5 +34,6 @@ def create_mcp_server(command: str) -> str:
     return OUTPUT_TEMPLATE.format(
         server_path=server_path,
         safe_command_name=safe_command_name,
-        save_dir=save_dir
+        save_dir=save_dir,
+        output_file_name=file_name
     )

@@ -3,6 +3,8 @@ import os
 from automcp import VERSION
 from automcp.pipeline import AutoMCP_Pipeline
 from automcp.mcp_server import mcp
+from automcp.constants import OUTPUT_TEMPLATE
+from automcp.utils import safe_name
 
 @click.group()
 @click.version_option(VERSION, "-v", "--version")
@@ -23,7 +25,16 @@ def create(program, help_command, output):
     os.makedirs(head, exist_ok=True)
     with open(output, "w") as f:
         f.write(server_template)
-    click.echo(f"MCP server tool created at {output}") 
+
+    # Full path to the output file
+    save_dir = os.path.dirname(os.path.abspath(output))
+
+    click.echo(OUTPUT_TEMPLATE.format(
+        server_path=output,
+        safe_command_name=safe_name(program),
+        save_dir=save_dir,
+        output_file_name=os.path.basename(output)
+    ))
 
 
 @cli.command()

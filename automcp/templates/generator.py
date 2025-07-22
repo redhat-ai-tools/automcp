@@ -23,6 +23,18 @@ def process_safe_name(command: str):
 
     return command
 
+def process_flag_name(flag: str):
+    '''
+    Convert a flag name to a safe name.
+    e.g. --help -> help
+    e.g. --help-long -> help_long
+    '''
+    flag = flag.strip()
+    if flag.startswith("--"):
+        flag = flag[2:]
+    flag = flag.replace("-", "_")
+    return flag
+
 def prepare_arg(arg: Argument):
     return {
         "name": process_safe_name(arg.name),
@@ -45,6 +57,7 @@ def preprocess_flags(flags: List[Option]):
     return [
         {
             "flag": flag.flag,
+            "flag_name": process_flag_name(flag.flag),
             "description": flag.description,
             "type": flag.type
         }

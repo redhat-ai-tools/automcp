@@ -58,7 +58,7 @@ class ExtractCommand(LLMTask):
     
     def __postprocess_option(self, option: Option) -> Option:
         flag = option.flag.strip()
-        flag = re.sub(r'-\w(?!\w)', '', flag)
+        flag = re.sub(r'[^a-zA-Z0-9\-]', '', flag)
         option.flag = flag
         return option
 

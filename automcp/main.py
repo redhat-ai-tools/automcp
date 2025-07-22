@@ -2,7 +2,6 @@ import click
 import os
 from automcp import VERSION
 from automcp.pipeline import AutoMCP_Pipeline
-from automcp.mcp_server import mcp
 from automcp.constants import OUTPUT_TEMPLATE
 from automcp.utils import safe_name
 
@@ -11,7 +10,9 @@ from automcp.utils import safe_name
 def cli():
     pass
 
-@cli.command()
+@cli.command(
+    help="Create an MCP server for a given program"
+)
 @click.option("--program", "-p", help="Path to script, CLI, or executable", required=True)
 @click.option("--help_command", "-hc", help="Name of the help command", default="--help")
 @click.option("--output", "-o", help="Save path for the MCP server", default="./server.py")
@@ -42,6 +43,7 @@ def run():
     """
     Run the AutoMCP Server.
     """
+    from automcp.mcp_server import mcp
     click.echo(f"Starting AutoMCP Server...")
     mcp.run()
 

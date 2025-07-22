@@ -1,20 +1,13 @@
-# Auto-MCP
-
-Convert any CLI tool for Agentic Use.
-
-## ✨ Overview
-
-This project Auto-MCP is an innovative tool designed to bridge the gap between traditional Command Line Interface (CLI) tools and the emerging interoperability standards for LLMs. The framework is designed to help tool developers to accelerate building extension of their tools to LLMs without having to write a new server, cli or other utility.
 
 
-### 🎯 The Problem We're Solving
 
-The reason behind creation of this framework is because:
+# AutoMCP: Convert any CLI tool, API or program for Agentic Use
 
-1) **Reusability**: Don't reinvent the wheel when there are APIs or CLIs available.
-2) **Maintenance**: Reduces overhead of maintaining a tool service for LLM.
+## What is AutoMCP?
 
-### 🚀 Our Innovative Solution
+Integrating traditional CLI tools and APIs with modern Large Language Models (LLMs) and agentic platforms is often a complex and time-consuming process. Developers typically need to write custom servers, wrappers, or interfaces to make their tools accessible to LLMs, slowing down innovation and interoperability.
+
+AutoMCP solves this problem by providing an automated framework that bridges the gap between existing CLI tools, APIs, and the latest interoperability standards for LLMs, such as the Model Context Protocol (MCP). With AutoMCP, developers can rapidly extend their tools for LLM and agentic use—without having to manually implement new servers or utilities—enabling faster integration, experimentation, and adoption in AI-driven workflows.
 
 
 ## 🌟 Key Features
@@ -24,7 +17,7 @@ The reason behind creation of this framework is because:
     - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
     - [Universal Tool Calling Protocol (UTCP)](https://www.utcp.io) [Future Scope]
     - [Agent2Agent (A2A)](https://github.com/a2aproject/A2A) [Future Scope]
-- CLI Tool Aggregator [Future Scope]
+- MCP Gateway [Future Scope]
 - API Support (OpenAPI and Swagger) [Future Scope]
 
 
@@ -60,9 +53,13 @@ Update the following properties in the `.env` file:
 - **MODEL_KEY**: API token for LLM.
 - **MODEL_NAME**: Name of the LLM model.
 
-# Usage
+## Usage
 
-## Standalone
+AutoMCP can be run in two modes: as a standalone CLI tool, or as an MCP server that you can connect to using your preferred MCP clients or hosts.
+
+### Mode 1: Standalone
+
+In the standalone mode, the automcp can take CLI programs as input and output the MCP server.
 
 ```
 source .env
@@ -74,7 +71,7 @@ uv run automcp --help
 uv run automcp create -p "podman images" -o ./server.py
 ```
 
-## MCP Server
+### Mode 2: MCP Server
 
 AutoMCP also provides MCP server that lets you create MCP servers from a MCP client. 
 
@@ -102,5 +99,24 @@ If you want to register the AutoMCP MCP server in cursor or claude, then you can
 }
 ```
 
+Currently users need to manually register the ouput server with their tools.
 
-Currently you still need to manually register the ouput 
+
+## How it works?
+
+![Flow Diagram](./media/flow_diagram.jpg)
+
+automcp uses an LLM workflow to process CLI help documentation and generate MCP server. 
+
+At the core of project, is the [llm modules](./automcp/llm/) that defines multiple LLM agents each used in different parts of the CLI help text processing.
+
+1. [Detect Sub-Command](./automcp/llm/tasks/detect_sub_commands.py): This agent is responsible for evaluating whether the given help text contains sub-commands or not.
+
+2. [Extract Command List](./automcp/llm/tasks/extract_command_list.py): Agent to extract list of sub-commands.
+
+3. [Extract Command](./automcp/llm/tasks/extract_command.py): Agent to extract command details (description, arguments, flags, etc).
+
+The interaction with the actual LLM server is done through the standard [OpenAI client](https://github.com/openai/openai-python). LLM outputs are structured by using OpenAI client [support](https://platform.openai.com/docs/guides/structured-outputs?api-mode=chat) for [PyDantic](https://docs.pydantic.dev/latest/) Data Modeling library.
+
+
+The generation of MCP server is done through Jinja2 templating library and you can find the details about the generator and template under [templates](./automcp/templates/) directory.

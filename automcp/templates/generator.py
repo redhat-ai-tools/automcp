@@ -2,7 +2,7 @@ import jinja2
 import os
 import re
 from typing import List
-from automcp.models import Argument, CommandItem
+from automcp.models import Argument, CommandItem, Option
 
 environment = jinja2.Environment()
 # Add enumerate to the template environment so it's available in templates
@@ -41,13 +41,25 @@ def preprocess_args(args: List[Argument]):
         ]
     return [prepare_arg(arg) for arg in args]
 
+def preprocess_flags(flags: List[Option]):
+    return [
+        {
+            "flag": flag.flag,
+            "description": flag.description,
+            "type": flag.type
+        }
+        for flag in flags
+    ]
+
 def prepare_command(command: CommandItem):
     args = preprocess_args(command.data.arguments)
+    flags = preprocess_flags(command.data.options)
     return {
         "command": command.command,
         "description": command.data.description,
         "function": process_safe_name(command.command),
         "args": args,
+        "flags": flags
     }
 
 

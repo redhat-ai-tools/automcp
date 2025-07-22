@@ -71,8 +71,7 @@ source .env
 uv run automcp --help
 
 # Generate mcp server for a podman command
-mkdir -p tmp
-uv run automcp create -p "podman images" -o ./tmp/server.py
+uv run automcp create -p "podman images" -o ./server.py
 ```
 
 ## MCP Server

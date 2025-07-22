@@ -55,6 +55,16 @@ def {{ command.function }}(
     {%- endfor %}
     {%- endif %}
 
+    {%- for flag in command.flags %}
+    {%- if flag.type == "" %}
+    if {{ flag.flag_name }} == True :
+        splits.append("{{ flag.flag }}")
+    {%- else %}
+    if {{ flag.flag_name }} is not None and {{ flag.flag_name }} != "":
+        splits.append("{{ flag.flag }}=" + {{ flag.flag_name }})
+    {%- endif %}
+    {%- endfor %}
+
     return run_shell(splits)
 
 {% endfor %}

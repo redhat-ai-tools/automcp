@@ -27,8 +27,23 @@ def {{ command.function }}(
 {%- for arg in command.args %}
     {{ arg.name }}{%- if loop.index0 < command.args|length - 1 %},{% endif %}
 {%- endfor %}
+{%- if command.args|length != 0 and command.flags|length != 0 -%}
+    ,
+{%- endif %}
+{%- for flag in command.flags %}
+    {{ flag.flag_name }} {%- if flag.type == "" %}: bool = False {%- else %}: str = None {%- endif %}
+    {%- if loop.index0 < command.flags|length - 1 %},{% endif %}
+{%- endfor %}
 ) -> str:
-    """{{ command.description }}"""
+    """
+    {{ command.description }}
+
+    Arguments:
+    {%- for flag in command.flags %}
+        {{ flag.flag_name }}: {{ flag.description }}
+    {%- endfor %}
+
+    """
     splits = "{{ command.command }}".split()
 
     {%- if command.args|length == 1 and command.args[0].name.startswith("*") %}
@@ -39,6 +54,16 @@ def {{ command.function }}(
         splits.append({{ arg.name }})
     {%- endfor %}
     {%- endif %}
+
+    {%- for flag in command.flags %}
+    {%- if flag.type == "" %}
+    if {{ flag.flag_name }} == True :
+        splits.append("{{ flag.flag }}")
+    {%- else %}
+    if {{ flag.flag_name }} is not None and {{ flag.flag_name }} != "":
+        splits.append("{{ flag.flag }}=" + {{ flag.flag_name }})
+    {%- endif %}
+    {%- endfor %}
 
     return run_shell(splits)
 

@@ -2,7 +2,7 @@ import jinja2
 import os
 import re
 from typing import List
-from automcp.models import Argument, CommandItem
+from automcp.models import Argument, CommandItem, Option
 
 environment = jinja2.Environment()
 # Add enumerate to the template environment so it's available in templates
@@ -23,6 +23,18 @@ def process_safe_name(command: str):
 
     return command
 
+def process_flag_name(flag: str):
+    '''
+    Convert a flag name to a safe name.
+    e.g. --help -> help
+    e.g. --help-long -> help_long
+    '''
+    flag = flag.strip()
+    if flag.startswith("--"):
+        flag = flag[2:]
+    flag = flag.replace("-", "_")
+    return flag
+
 def prepare_arg(arg: Argument):
     return {
         "name": process_safe_name(arg.name),
@@ -41,13 +53,26 @@ def preprocess_args(args: List[Argument]):
         ]
     return [prepare_arg(arg) for arg in args]
 
+def preprocess_flags(flags: List[Option]):
+    return [
+        {
+            "flag": flag.flag,
+            "flag_name": process_flag_name(flag.flag),
+            "description": flag.description,
+            "type": flag.type
+        }
+        for flag in flags
+    ]
+
 def prepare_command(command: CommandItem):
     args = preprocess_args(command.data.arguments)
+    flags = preprocess_flags(command.data.options)
     return {
         "command": command.command,
         "description": command.data.description,
         "function": process_safe_name(command.command),
         "args": args,
+        "flags": flags
     }
 
 

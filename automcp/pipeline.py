@@ -78,6 +78,7 @@ class AutoMCP_Pipeline:
         )
         result = cast(ModelResponseData, result)
         data = cast(Command, result.data)
+        logger.debug("Extracted options: %s", data.options)
         return CommandItem(command=command, data=data)
 
     def extract_command_list(self, help_docs: str) -> List[str]:

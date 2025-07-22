@@ -3,6 +3,7 @@ from typing import Any, List
 
 
 from automcp.models import (
+    Option,
     TasksTag,
     ModelResponseData,
     Command,
@@ -54,6 +55,12 @@ class ExtractCommand(LLMTask):
         # Remove short flags like -h, -v, etc.
         command = re.sub(r'-\w(?!\w)', '', command)
         return command
+    
+    def __postprocess_option(self, option: Option) -> Option:
+        flag = option.flag.strip()
+        flag = re.sub(r'[^a-zA-Z0-9\-]', '', flag)
+        option.flag = flag
+        return option
 
     def preprocess(self):
         return {
@@ -69,6 +76,7 @@ class ExtractCommand(LLMTask):
 
     def postprocess(self, result: Command) -> ModelResponseData:
         tags = self.tags
+        result.options = [self.__postprocess_option(option) for option in result.options]
         return ModelResponseData(
             data=result,
             tags=tags,

@@ -1,6 +1,4 @@
 
-
-
 # AutoMCP: Convert any CLI tool, API or program for Agentic Use
 
 ## What is AutoMCP?
@@ -57,7 +55,7 @@ Update the following properties in the `.env` file:
 
 AutoMCP can be run in two modes: as a standalone CLI tool, or as an MCP server that you can connect to using your preferred MCP clients or hosts.
 
-### Mode 1: Standalone
+### 💻 Mode 1: Standalone
 
 In the standalone mode, the automcp can take CLI programs as input and output the MCP server.
 
@@ -71,7 +69,7 @@ uv run automcp --help
 uv run automcp create -p "podman images" -o ./server.py
 ```
 
-### Mode 2: MCP Server
+### 🖥️ Mode 2: MCP Server 
 
 AutoMCP also provides MCP server that lets you create MCP servers from a MCP client. 
 
@@ -102,7 +100,7 @@ If you want to register the AutoMCP MCP server in cursor or claude, then you can
 Currently users need to manually register the ouput server with their tools.
 
 
-## How it works?
+## ⚙️ How it works?
 
 ![Flow Diagram](./media/flow_diagram.jpg)
 
@@ -120,3 +118,12 @@ The interaction with the actual LLM server is done through the standard [OpenAI 
 
 
 The generation of MCP server is done through Jinja2 templating library and you can find the details about the generator and template under [templates](./automcp/templates/) directory.
+
+
+## ⚠️ Limitations
+
+- The MCP server registration with tools like Cursor or Claude must currently be done manually.
+- Only supports CLI tools with standard help output; highly custom or interactive CLIs may not be parsed correctly.
+- LLM-based extraction may occasionally misinterpret complex or ambiguous help texts.
+- Generated MCP servers may require manual review or adjustment for edge cases.
+- Performance and accuracy depend on the quality of the underlying LLM and help documentation.

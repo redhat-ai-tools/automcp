@@ -39,13 +39,20 @@ def create(program, help_command, output):
 
 
 @cli.command()
-def run():
+@click.option("--mode", "-m", help="Mode to run the server in (stdio, sse, streamable-http)", default='stdio', type=str)
+@click.option("--host", help="Host to run the server on", default='0.0.0.0', type=str)
+@click.option("--port", help="Port to run the server on", default=8000, type=int)
+def run(mode, host, port):
     """
     Run the AutoMCP Server.
     """
     from automcp.mcp_server import mcp
     click.echo(f"Starting AutoMCP Server...")
-    mcp.run()
+
+    if mode not in ['stdio', 'sse', 'streamable-http']:
+        raise ValueError(f"Invalid mode: {mode}")
+
+    mcp.run(transport=mode)
 
 if __name__ == "__main__":
     cli()

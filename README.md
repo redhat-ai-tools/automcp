@@ -82,7 +82,10 @@ Options:
 $ uv run automcp create -p "podman images" -o ./server.py
 
 # Generate mcp server for multiple commands
-$ uv run automcp create -p "podman container list" -p "podman logs" -p "podman images" -o ./server.py
+$ uv run automcp create -p "podman container list" -p "podman logs" -p "podman images" -o ./podman.py
+
+# Generate mcp server for complex command (with sub-commands)
+$ uv run automcp create -p "helm repo" -o ./helm.py
 ```
 
 ### 🖥️ Mode 2: MCP Server 

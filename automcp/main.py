@@ -1,3 +1,4 @@
+from typing import Tuple
 import click
 import os
 from automcp import VERSION
@@ -13,11 +14,21 @@ def cli():
 @cli.command(
     help="Create an MCP server for a given program"
 )
-@click.option("--program", "-p", help="Path to script, CLI, or executable", required=True)
+@click.option(
+    "--program", "-p",
+    help="Path to script, CLI, or executable. Can be specified multiple times.",
+    required=True,
+    multiple=True
+)
 @click.option("--help_command", "-hc", help="Name of the help command", default="--help")
 @click.option("--output", "-o", help="Save path for the MCP server", default="./server.py")
-def create(program, help_command, output):
-    click.echo(f"Creating MCP server for project: {program}")
+def create(program: Tuple[str, ...], help_command: str, output: str):
+    program = list(program)
+
+    if len(program) == 1:
+        click.echo(f"Creating MCP server for program: {program[0]}")
+    else:
+        click.echo(f"Creating MCP server for {len(program)} programs")
 
     pipeline = AutoMCP_Pipeline()
     server_template = pipeline.run(program, help_command)
@@ -32,7 +43,7 @@ def create(program, help_command, output):
 
     click.echo(OUTPUT_TEMPLATE.format(
         server_path=output,
-        safe_command_name=safe_name(program),
+        safe_command_name=safe_name(program[0]) if len(program) == 1 else "my-server",
         save_dir=save_dir,
         output_file_name=os.path.basename(output)
     ))
@@ -40,9 +51,7 @@ def create(program, help_command, output):
 
 @cli.command()
 @click.option("--mode", "-m", help="Mode to run the server in (stdio, sse, streamable-http)", default='stdio', type=str)
-@click.option("--host", help="Host to run the server on", default='0.0.0.0', type=str)
-@click.option("--port", help="Port to run the server on", default=8000, type=int)
-def run(mode, host, port):
+def run(mode):
     """
     Run the AutoMCP Server.
     """

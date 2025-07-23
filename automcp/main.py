@@ -34,7 +34,8 @@ def create(program: Tuple[str, ...], help_command: str, output: str):
     server_template = pipeline.run(program, help_command)
 
     head, _ = os.path.split(output)
-    os.makedirs(head, exist_ok=True)
+    if len(head.strip()) > 0:
+        os.makedirs(head, exist_ok=True)
     with open(output, "w") as f:
         f.write(server_template)
 

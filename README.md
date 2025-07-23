@@ -10,6 +10,7 @@ AutoMCP solves this problem by providing an automated framework that bridges the
 
 ## 🌟 Key Features
 
+- **CLI**
 - **MCP Server**
 - **Supported Protocols**: 
     - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
@@ -17,6 +18,7 @@ AutoMCP solves this problem by providing an automated framework that bridges the
     - [Agent2Agent (A2A)](https://github.com/a2aproject/A2A) [Future Scope]
 - MCP Gateway [Future Scope]
 - API Support (OpenAPI and Swagger) [Future Scope]
+- Sourcing man pages [Future Scope] 
 
 
 ## 🚦 Getting Started

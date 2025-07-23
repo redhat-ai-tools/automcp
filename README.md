@@ -63,10 +63,24 @@ In the standalone mode, the automcp can take CLI programs as input and output th
 source .env
 
 # Run automcp
-uv run automcp --help
+$ uv run automcp create --help
+Usage: automcp create [OPTIONS]
 
-# Generate mcp server for a podman command
-uv run automcp create -p "podman images" -o ./server.py
+  Create an MCP server for a given program
+
+Options:
+  -p, --program TEXT        Path to script, CLI, or executable. Can be
+                            specified multiple times.  [required]
+  -hc, --help_command TEXT  Name of the help command
+  -o, --output TEXT         Save path for the MCP server
+  --help                    Show this message and exit.
+
+
+# Generate mcp server for a single command
+$ uv run automcp create -p "podman images" -o ./server.py
+
+# Generate mcp server for multiple commands
+$ uv run automcp create -p "podman container list" -p "podman logs" -p "podman images" -o ./server.py
 ```
 
 ### 🖥️ Mode 2: MCP Server 
